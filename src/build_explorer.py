@@ -1,5 +1,7 @@
-"""Build outputs/explorer.html: one self-contained file (engine + data inlined)."""
+"""Build outputs/explorer.html: one self-contained file (engine + data inlined).
+Also copies it to 00_SUBMISSION/ so the submitted explorer stays current."""
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -20,4 +22,5 @@ if __name__ == "__main__":
     html = html.replace("/*TRUTH*/", str(truth_benchmark(t)))
     OUT.mkdir(exist_ok=True)
     (OUT / "explorer.html").write_text(html)
+    shutil.copy(OUT / "explorer.html", SRC.parent / "00_SUBMISSION" / "Interactive_Explorer.html")
     print(f"wrote {OUT / 'explorer.html'} ({len(html) / 1e6:.1f} MB)")

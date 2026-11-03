@@ -1,5 +1,7 @@
 # Rebuilding the 68% persistence figure
 
+**Reviewing this submission? Start with [00_SUBMISSION](00_SUBMISSION/): the explorer, slide deck and Solution Document.**
+
 Case 2: Stakeholder Transition and Trust. A transparent, testable rebuild of the
 6-month persistence analysis, so the interim VP can inspect it, test its
 assumptions and explain it herself.
@@ -54,7 +56,7 @@ Never commit your key to the repo.
 | `outputs/explorer.html` | Interactive explorer: sliders for gap, look-back and look-forward, toggles for first-fill rule and lost-coverage patients |
 | `assistant/` | Methodology doc, grounded assistant, eval question set, eval runner |
 | `outputs/` | `sensitivity.csv`, `results.md`, `km_curves.json`, `eval_report.md`, `robustness.md`, `robustness.csv` |
-| `deliverables/` | Stakeholder slide deck and Solution Document |
+| `00_SUBMISSION/` | The files to review: explorer, slide deck and Solution Document |
 | `tests/` | Rule-level unit tests, generator tests, JS/Python parity test |
 
 ## Assumptions (confirm with the client)
