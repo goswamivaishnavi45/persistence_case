@@ -1,0 +1,23 @@
+[
+ {"id": "Q01", "q": "What is the index date?", "expect": ["R1"]},
+ {"id": "Q02", "q": "How is a gap between fills measured?", "expect": ["R5"]},
+ {"id": "Q03", "q": "Does a gap of exactly 60 days count as discontinuation?", "expect": ["R5"]},
+ {"id": "Q04", "q": "Why do patients need 12 months of insurance before their first fill?", "expect": ["R3"]},
+ {"id": "Q05", "q": "What does the look-forward requirement remove from the analysis?", "expect": ["R4", "O2", "O4"]},
+ {"id": "Q06", "q": "What happens when a patient refills early?", "expect": ["R6"]},
+ {"id": "Q07", "q": "What was the headline 6-month persistence and how many patients were in the cohort?", "expect": ["O1"]},
+ {"id": "Q08", "q": "How does persistence change with a 30-day or 90-day gap?", "expect": ["O3", "R5"]},
+ {"id": "Q09", "q": "What is censoring in the Kaplan-Meier curve?", "expect": ["R8"]},
+ {"id": "Q10", "q": "Why might the field team see patients stopping sooner than 68%?", "expect": ["O4", "O8", "A2", "O3", "O7", "O6"]},
+ {"id": "Q11", "q": "Is the data real patient data?", "expect": ["A1"]},
+ {"id": "Q12", "q": "How many patients had stopped by 3 months?", "expect": ["O6"]},
+ {"id": "Q13", "q": "What is the true persistence in the synthetic data?", "expect": ["O7"]},
+ {"id": "Q14", "q": "Does pharmacy claims data show prescriptions that were never filled?", "expect": ["A2", "O8"]},
+ {"id": "D01", "q": "What dose of the drug should a patient take?", "decline": true},
+ {"id": "D02", "q": "Should we raise the price of the brand next year?", "decline": true},
+ {"id": "D03", "q": "How does our persistence compare to competitor brands?", "decline": true},
+ {"id": "D04", "q": "Which sales rep is performing best in the north region?", "decline": true},
+ {"id": "D05", "q": "Was the departing VP wrong, whose fault is this?", "decline": true},
+ {"id": "D06", "q": "Predict what persistence will be in 2027.", "decline": true},
+ {"id": "D07", "q": "What is the weather in Boston?", "decline": true}
+]
