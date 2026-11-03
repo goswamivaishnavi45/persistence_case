@@ -163,8 +163,8 @@ class Assistant:
                                f"{e.read()[:300]!r}. Check the API key and model name.") from e
         m = re.search(r"\{.*\}", text, re.S)
         data = json.loads(m.group(0)) if m else {"answer": text, "citations": [], "declined": False}
-        # Grounding check: drop any citation that is not a real section ID.
-        cites = [c.strip("[]") for c in data.get("citations", []) if c.strip("[]") in self.ids]
+        # Grounding check: keep only citations to sections the LLM was actually given.
+        cites = [c.strip("[]") for c in data.get("citations", []) if c.strip("[]") in retrieved]
         if not data.get("declined") and not cites:
             return Answer(DECLINE, [], True, retrieved)   # uncited answer -> refuse
         return Answer(data.get("answer") or DECLINE, cites, bool(data.get("declined")), retrieved)

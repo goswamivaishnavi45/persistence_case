@@ -56,12 +56,12 @@ h2{font-size:15px;margin:0 0 8px}
       <div class="ctl"><label>Allowed gap (R5) <span id="gapv"></span></label>
         <input id="gap" type="range" min="15" max="120" step="5" value="60">
         <small>Days a patient can go without supply before counting as stopped. Original: 60.</small></div>
-      <div class="ctl"><label>Look-back enrolment (R3)</label>
-        <div class="seg" id="lb"><button data-v="0">None</button><button data-v="182">6 mo</button><button data-v="365" class="on">12 mo</button></div>
-        <small>Insurance needed before the first fill, to be sure the patient is new.</small></div>
-      <div class="ctl"><label>Look-forward enrolment (R4)</label>
-        <div class="seg" id="lf"><button data-v="0">None</button><button data-v="182">6 mo</button><button data-v="365" class="on">12 mo</button></div>
-        <small>Insurance needed after the first fill. "None" keeps patients who lose coverage and censors them (R8).</small></div>
+      <div class="ctl"><label>Look-back enrolment (R3) <span id="lbv"></span></label>
+        <input id="lb" type="range" min="0" max="12" step="1" value="12">
+        <small>Months of insurance needed before the first fill, to be sure the patient is new. Original: 12.</small></div>
+      <div class="ctl"><label>Look-forward enrolment (R4) <span id="lfv"></span></label>
+        <input id="lf" type="range" min="0" max="12" step="1" value="12">
+        <small>Months of insurance needed after the first fill. Original: 12. "None" keeps patients who lose coverage and censors them (R8).</small></div>
       <div class="ctl"><label>First fill identified as (R1)</label>
         <div class="seg" id="ir"><button data-v="first_ever" class="on">First ever</button><button data-v="first_in_window">First in window</button></div>
         <small>"First in window" ignores fills before 2022, so existing users can look new.</small></div>
@@ -188,12 +188,16 @@ function seg(id, key, conv){
     run();
   });
 }
-seg("lb","lookback",Number); seg("lf","lookforward",Number); seg("ir","indexRule",String); seg("cm","cmode",String);
+seg("ir","indexRule",String); seg("cm","cmode",String);
+const toDays = m => Math.floor(m * 365 / 12);   // 6 months = 182 days, 12 months = 365 days
+const moLabel = m => m === 0 ? "None" : m + " mo";
 $("gap").addEventListener("input", e => { p.maxGap = +e.target.value; run(); });
+$("lb").addEventListener("input", e => { p.lookback = toDays(+e.target.value); run(); });
+$("lf").addEventListener("input", e => { p.lookforward = toDays(+e.target.value); run(); });
 $("reset").addEventListener("click", () => {
-  p = {...ORIG}; cmode = "km"; $("gap").value = 60;
+  p = {...ORIG}; cmode = "km"; $("gap").value = 60; $("lb").value = 12; $("lf").value = 12;
   const set = (id,v)=>[...$(id).children].forEach(x=>x.classList.toggle("on", x.dataset.v==v));
-  set("lb",365); set("lf",365); set("ir","first_ever"); set("cm","km"); run();
+  set("ir","first_ever"); set("cm","km"); run();
 });
 
 function delta(v, base, unit){
@@ -204,6 +208,8 @@ function delta(v, base, unit){
 
 function run(){
   $("gapv").textContent = p.maxGap + " days";
+  $("lbv").textContent = moLabel(+$("lb").value);
+  $("lfv").textContent = moLabel(+$("lf").value);
   const res = Engine.buildCohort(DATA.patients, p, DATA.C);
   const s = Engine.summarise(res, p);
   const headline = (p.lookforward >= 182) ? s.pct_persistent_6m : (cmode === "km" ? s.km_6m : s.worst_case_6m);
@@ -218,7 +224,7 @@ function run(){
 }
 
 function draw(km, ref){
-  const W=720,H=340,L=46,R=14,T=12,B=36, maxT=540;
+  const W=720,H=340,L=46,R=24,T=12,B=36, maxT=540;
   const x = t => L + (W-L-R)*Math.min(t,maxT)/maxT, y = v => T + (H-T-B)*(1-v);
   const path = k => { let d=`M${x(0)},${y(1)}`; for(let i=1;i<k.t.length && k.t[i]<=maxT;i++){ d+=`H${x(k.t[i])}V${y(k.s[i])}`; } return d+`H${x(maxT)}`; };
   let g = "";

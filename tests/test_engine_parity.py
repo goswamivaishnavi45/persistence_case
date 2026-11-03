@@ -14,7 +14,8 @@ from export_data import compact  # noqa: E402
 from generate_data import GenConfig, generate  # noqa: E402
 
 CASES = [Params(), Params(max_gap=30), Params(lookforward_days=0),
-         Params(lookback_days=0, index_rule=IndexRule.FIRST_IN_WINDOW, max_gap=90)]
+         Params(lookback_days=0, index_rule=IndexRule.FIRST_IN_WINDOW, max_gap=90),
+         Params(lookback_days=91, lookforward_days=273, max_gap=45)]   # in-between slider stops
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")

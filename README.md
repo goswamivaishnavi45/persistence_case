@@ -21,6 +21,7 @@ Then:
 pip install numpy pandas scikit-learn pytest
 python src/generate_data.py --out data      # synthetic claims + enrolment (seed 42)
 python src/sensitivity.py                   # original result, sensitivity grid, results.md
+python src/robustness.py                    # confidence intervals, 10 seeds, stress test (several minutes)
 python src/build_explorer.py                # outputs/explorer.html (open in any browser)
 python -m pytest -q                         # 19 tests: every cohort rule + JS/Python parity
 python assistant/run_eval.py                # assistant evaluation -> outputs/eval_report.md
@@ -49,9 +50,11 @@ Never commit your key to the repo.
 | `src/cohort.py` | Exhibit 1 rules as small functions, tagged R1-R8 |
 | `src/sensitivity.py` | Original result, 27-scenario grid, KM curves, plain-language results |
 | `src/engine.js` | Same logic in JavaScript for the explorer (tested against Python) |
-| `outputs/explorer.html` | Interactive explorer: sliders for gap, look-back, look-forward, first-fill rule |
+| `src/robustness.py` | Confidence intervals, spread across 10 seeds, generator stress test |
+| `outputs/explorer.html` | Interactive explorer: sliders for gap, look-back and look-forward, toggles for first-fill rule and lost-coverage patients |
 | `assistant/` | Methodology doc, grounded assistant, eval question set, eval runner |
-| `outputs/` | `sensitivity.csv`, `results.md`, `km_curves.json`, `eval_report.md` |
+| `outputs/` | `sensitivity.csv`, `results.md`, `km_curves.json`, `eval_report.md`, `robustness.md`, `robustness.csv` |
+| `deliverables/` | Stakeholder slide deck and Solution Document |
 | `tests/` | Rule-level unit tests, generator tests, JS/Python parity test |
 
 ## Assumptions (confirm with the client)
@@ -78,12 +81,12 @@ Never commit your key to the repo.
 What explains the gap between 68% and what the field sees:
 
 1. **The 60-day gap is the biggest lever.** 30 days gives 41.5%, 90 days gives 81.2%. The number is mostly a statement about how forgiving the definition is.
-2. **The 12-month look-forward removes 833 patients who lost coverage.** In this data they stop more often, so removing them inflates the figure. Keeping them via Kaplan-Meier gives 64.5% (57.8% worst case).
+2. **The 12-month look-forward removes 833 patients who lost coverage.** In this data they stop more often, so removing them inflates the figure. Keeping them via Kaplan-Meier gives 64.5% (57.8% worst case). This depends on coverage loss being linked to stopping: with no link, the effect disappears (63.3% vs 63.6%, see `outputs/robustness.md`).
 3. **The single 6-month point hides early drop-off.** 17% have stopped by month 3, about half of all stopping before month 6.
 4. **Claims can't see** prescriptions never filled, cash payments or samples. The field sees these patients; no rule change recovers them.
 5. **The first-fill definition** matters little here, because the 12-month look-back already blocks existing users.
 
-**Message for the VP:** 68% is a correct answer to a narrow question: *of continuously insured new starters, how many had no break longer than 60 days by month 6?* It is not the share of all patients who start therapy and keep going. Present it with the curve and the range (roughly 58-65% under less selective rules), not as one number.
+**Message for the VP:** 68% is a correct answer to a narrow question: *of continuously insured new starters, how many had no break longer than 60 days by month 6?* It is not the share of all patients who start therapy and keep going. Present it with its definition and the curve, not as one number. The 58-65% range under less selective rules comes from synthetic data, so don't quote it as a figure for the brand until this has been rerun on real claims.
 
 ## Methodology assistant
 
